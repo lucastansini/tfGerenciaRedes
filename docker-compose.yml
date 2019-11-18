@@ -1,0 +1,44 @@
+version: '3.3'
+services:
+    db:
+        image: mysql:5.7
+        volumes:
+            - db_data:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: somewordpress
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+    wordpress:
+        depends_on:
+            - db
+        image: wordpress:latest
+        ports:
+            - "8000:80"
+        restart: always
+        environment:
+            WORDPRESS_DB_HOST: db:3306
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress
+    varnish:
+        depends_on:
+            - wordpress
+        image: varnish:latest
+        ports:
+            - "80:80"
+            - "6081:6081"
+            - "6082:6082"
+        restart: always
+        # environment:
+            # VARNISH_PORT:         "6081"
+            # VARNISH_ADMIN_PORT:   "6082"
+            # VARNISH_BACKEND_HOST: "backendhost"
+            # VARNISH_BACKEND_PORT: "8080"
+            # CACHE_SIZE:           "100M"
+        volumes:
+            - ./data/varnish:/var/lib/varnish
+            - ./config/varnish:/etc/varnish
+volumes:
+    db_data: {}
