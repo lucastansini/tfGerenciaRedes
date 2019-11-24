@@ -35,16 +35,24 @@ print("Miss: {}".format(varnish_miss))
 print("Pass: {}".format(varnish_pass))
 print("Total Requests: {}".format(varnish_total_req))
 
-# Pie chart, where the slices will be ordered and plotted counter-clockwise:
 labels = 'HIT', 'MISS', 'PASS'
 sizes = [varnish_hit, varnish_miss, varnish_pass]
 explode = (0, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
-fig1, ax1 = plt.subplots()
+labels2 = 'Chached', 'Not Cached'
+sizes2 = [varnish_hit, varnish_miss + varnish_pass]
+explode2 = (0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+fig, (ax1, ax2) = plt.subplots(1, 2, num="Varnish Requests")
+
+ax1.set_title("Request Result")
 ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-plt.show()
+ax2.set_title("Requests")
+ax2.pie(sizes2, explode=explode2, labels=labels2, autopct='%1.1f%%',
+        shadow=True, startangle=90)
+ax2.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 plt.show()
